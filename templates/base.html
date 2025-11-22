@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Library Management System{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="{{ url_for('main.index') }}">翱翔门户 | 图书馆</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item {% if request.endpoint == 'books' %}active{% endif %}">
+                    <a class="nav-link" href="{{ url_for('main.books') }}">Books</a>
+                </li>
+                {% if 'user_id' in session %}
+                    <li class="nav-item {% if request.endpoint == 'profile' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('user.profile') }}">My Profile</a>
+                    </li>
+                    <li class="nav-item {% if request.endpoint == 'my_borrows' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('user.my_borrows') }}">My Borrows</a>
+                    </li>
+                    <li class="nav-item {% if request.endpoint == 'my_reservations' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('user.my_reservations') }}">My Reservations</a>
+                    </li>
+                    <li class="nav-item {% if request.endpoint == 'notifications' %}active{% endif %}">
+                        <a class="nav-link" href="{{ url_for('user.notifications') }}">
+                            Notifications
+                            {% if unread_notification_count > 0 %}
+                                <span class="badge badge-danger">{{ unread_notification_count }}</span>
+                            {% endif %}
+                        </a>
+                    </li>
+                    {% if session.user_type == 'Teacher' %}
+                        <li class="nav-item dropdown {% if request.endpoint and 'admin' in request.endpoint %}active{% endif %}">
+                            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Admin
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="adminDropdown">
+                                <a class="dropdown-item" href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+                                <a class="dropdown-item" href="{{ url_for('admin.manage_books') }}">Manage Books</a>
+                                <a class="dropdown-item" href="{{ url_for('admin.reservations') }}">Manage Reservations</a>
+                                <a class="dropdown-item" href="{{ url_for('admin.manage_returns') }}">Manage Returns</a>
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endif %}
+            </ul>
+            <ul class="navbar-nav">
+                {% if 'user_id' in session %}
+                    <li class="nav-item">
+                        <span class="navbar-text mr-3">
+                            Welcome, {{ session['user_name'] }}!
+                        </span>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+    <main class="container mt-4">
+        {% block breadcrumb %}{% endblock %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <span>&copy; 2025 Library Management System</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

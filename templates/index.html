@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <div class="jumbotron bg-primary text-white text-center">
+        <h1 class="display-4">欢迎来到翱翔门户</h1>
+        <p class="lead">Welcome to the Library Portal.</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('main.books') }}">
+                <div class="card portal-card">
+                    <div class="icon">&#x1F50D;</div>
+                    <h5>Search Books</h5>
+                    <p class="small text-muted">Browse and find books in our collection.</p>
+                </div>
+            </a>
+        </div>
+        {% if 'user_id' in session %}
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('user.profile') }}">
+                <div class="card portal-card">
+                    <div class="icon">&#x1F464;</div>
+                    <h5>My Profile</h5>
+                    <p class="small text-muted">View and edit your profile information.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('user.my_borrows') }}">
+                <div class="card portal-card">
+                    <div class="icon">&#x1F4DA;</div>
+                    <h5>My Borrows</h5>
+                    <p class="small text-muted">See your currently borrowed books.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('user.my_reservations') }}">
+                <div class="card portal-card">
+                    <div class="icon">&#x1F4DD;</div>
+                    <h5>My Reservations</h5>
+                    <p class="small text-muted">Check the status of your reservations.</p>
+                </div>
+            </a>
+        </div>
+            {% if session.user_type == 'Teacher' %}
+            <div class="col-md-4 mb-4">
+                <a href="{{ url_for('admin.dashboard') }}">
+                    <div class="card portal-card">
+                        <div class="icon">&#x1F4BB;</div>
+                        <h5>Admin Dashboard</h5>
+                        <p class="small text-muted">Manage books, users, and borrows.</p>
+                    </div>
+                </a>
+            </div>
+            {% endif %}
+        {% else %}
+        <div class="col-md-4 mb-4">
+            <a href="{{ url_for('auth.login') }}">
+                <div class="card portal-card">
+                    <div class="icon">&#x1F511;</div>
+                    <h5>Login</h5>
+                    <p class="small text-muted">Access your account and services.</p>
+                </div>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}
+

@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Admin</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Admin Dashboard</h1>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ url_for('admin.manage_books') }}" class="btn btn-sm btn-outline-secondary">Manage Books</a>
+            <a href="{{ url_for('admin.reservations') }}" class="btn btn-sm btn-outline-secondary ml-2">Manage Reservations</a>
+        </div>
+    </div>
+
+    <h3 class="mt-4">On-Loan Books</h3>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Title</th>
+                            <th>User</th>
+                            <th>Borrow Date</th>
+                            <th>Due Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if borrows %}
+                            {% for borrow in borrows %}
+                                <tr class="{{ 'table-danger' if borrow.DueDate < today else '' }}">
+                                    <td>{{ borrow.Title }}</td>
+                                    <td>{{ borrow.FullName }} ({{ borrow.UserID }})</td>
+                                    <td>{{ borrow.BorrowDate.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ borrow.DueDate.strftime('%Y-%m-%d') }}</td>
+                                    <td>
+                                        {% if borrow.DueDate < today %}
+                                            <span class="badge badge-danger">Overdue</span>
+                                        {% else %}
+                                            <span class="badge badge-info">On Loan</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <form action="{{ url_for('admin.remind_user', record_id=borrow.RecordID) }}" method="post" class="d-inline">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                            <button type="submit" class="btn btn-sm btn-warning">Remind</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">No books are currently on loan.</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

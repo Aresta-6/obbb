@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Admin</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.manage_books') }}">Manage Books</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Edit Book</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block title %}Edit Book{% endblock %}
+
+{% block content %}
+    <h2 class="mb-4">Edit Book: {{ book.Title }}</h2>
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" class="form-control" id="title" name="title" required value="{{ book.Title }}">
+                </div>
+                <div class="form-group">
+                    <label for="authors">Authors (comma-separated)</label>
+                    <input type="text" class="form-control" id="authors" name="authors" required value="{{ book.authors }}">
+                </div>
+                <div class="form-group">
+                    <label for="isbn">ISBN</label>
+                    <input type="text" class="form-control" id="isbn" name="isbn" required value="{{ book.ISBN }}">
+                    <small class="form-text text-muted">
+                        A valid ISBN is required to display the book cover automatically. Covers are sourced from OpenLibrary.org.
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label for="cover_image_url">Cover Image URL</label>
+                    <input type="text" class="form-control" id="cover_image_url" name="cover_image_url" value="{{ book.CoverImageURL or '' }}">
+                    <small class="form-text text-muted">
+                        Optional: Provide a URL to a custom cover image. If left blank, the cover will be fetched from OpenLibrary based on the ISBN.
+                    </small>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="publisher">Publisher</label>
+                        <select id="publisher" name="publisher" class="form-control" required>
+                            {% for pub in publishers %}
+                                <option value="{{ pub.PublisherID }}" {% if pub.PublisherID == book.PublisherID %}selected{% endif %}>
+                                    {{ pub.PublisherName }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="category">Category</label>
+                        <select id="category" name="category" class="form-control" required>
+                            {% for cat in categories %}
+                                <option value="{{ cat.CategoryID }}" {% if cat.CategoryID == book.CategoryID %}selected{% endif %}>
+                                    {{ cat.CategoryName }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="publication_date">Publication Date</label>
+                    <input type="date" class="form-control" id="publication_date" name="publication_date" value="{{ book.PublicationDate.strftime('%Y-%m-%d') if book.PublicationDate }}">
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="description" name="description" rows="5">{{ book.Description }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Book</button>
+                <a href="{{ url_for('admin.manage_books') }}" class="btn btn-secondary">Cancel</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

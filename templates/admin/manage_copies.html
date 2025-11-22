@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.dashboard') }}">Admin</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('admin.manage_books') }}">Manage Books</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Manage Copies</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block title %}Manage Copies for {{ book.Title }}{% endblock %}
+
+{% block content %}
+    <h2 class="mb-4">Manage Copies for <em>{{ book.Title }}</em></h2>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            Add New Copy
+        </div>
+        <div class="card-body">
+            <form method="post" action="{{ url_for('admin.add_copy', book_id=book.BookID) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <div class="form-row align-items-end">
+                    <div class="form-group col-md-4">
+                        <label for="copy_id">Copy ID</label>
+                        <input type="text" class="form-control" id="copy_id" name="copy_id" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="location">Location</label>
+                        <input type="text" class="form-control" id="location" name="location">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <button type="submit" class="btn btn-primary">Add Copy</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            Existing Copies
+        </div>
+        <div class="card-body">
+            {% if copies %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Copy ID</th>
+                            <th>Status</th>
+                            <th>Location</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for copy in copies %}
+                            <tr>
+                                <td>{{ copy.CopyID }}</td>
+                                <td>
+                                    <span class="badge badge-pill badge-{{ 'success' if copy.Status == 'Available' else 'secondary' }}">
+                                        {{ copy.Status }}
+                                    </span>
+                                </td>
+                                <td>{{ copy.Location }}</td>
+                                <td>
+                                    {% if copy.Status == 'Available' %}
+                                        <form method="post" action="{{ url_for('admin.delete_copy', copy_id=copy.CopyID) }}" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this copy?');">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    {% else %}
+                                        <button type="button" class="btn btn-danger btn-sm" disabled>Delete</button>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-info">No copies found for this book.</div>
+            {% endif %}
+        </div>
+    </div>
+    <a href="{{ url_for('admin.manage_books') }}" class="btn btn-secondary mt-3">Back to Manage Books</a>
+{% endblock %}

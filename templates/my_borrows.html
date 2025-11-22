@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">My Borrows</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block title %}My Borrows{% endblock %}
+
+{% block content %}
+    <h2 class="mb-4">My Current Borrows</h2>
+    <div class="card">
+        <div class="card-body">
+            {% if borrows %}
+                <div class="list-group list-group-flush">
+                    {% for borrow in borrows %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{ borrow.Title }}</h5>
+                                <a href="{{ url_for('user.return_book', record_id=borrow.RecordID) }}" class="btn btn-sm btn-outline-primary">Return Book</a>
+                            </div>
+                            <p class="mb-1">
+                                <small>Borrowed on: {{ borrow.BorrowDate.strftime('%Y-%m-%d') }}</small><br>
+                                <small class="text-danger">Due by: {{ borrow.DueDate.strftime('%Y-%m-%d') }}</small>
+                            </p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="alert alert-info">You have no books currently borrowed.</div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

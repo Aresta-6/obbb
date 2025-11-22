@@ -1,0 +1,152 @@
+:root {
+    --npu-blue: #003d7d;
+    --npu-blue-dark: #002a56;
+    --npu-light-gray: #f0f2f5;
+    --npu-text-color: #333;
+    --npu-link-color: #0056b3;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+    background-color: var(--npu-light-gray);
+    color: var(--npu-text-color);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main.container {
+    flex: 1 0 auto;
+}
+
+.navbar {
+    background-color: var(--npu-blue);
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.navbar-brand, .navbar-nav .nav-link, .navbar-text {
+    color: #fff !important;
+    transition: color .2s;
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.navbar-nav .nav-link:hover {
+    color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.navbar-nav .nav-item.active .nav-link {
+    font-weight: bold;
+}
+
+.card {
+    border: 1px solid #e8e8e8;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
+    transition: box-shadow .3s;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.book-card {
+    margin-bottom: 2rem;
+}
+
+.btn-primary {
+    background-color: var(--npu-blue);
+    border-color: var(--npu-blue);
+    border-radius: 4px;
+    padding: 8px 20px;
+    transition: background-color .2s, border-color .2s;
+}
+
+.btn-primary:hover {
+    background-color: var(--npu-blue-dark);
+    border-color: var(--npu-blue-dark);
+}
+
+.btn-secondary {
+    border-radius: 4px;
+    padding: 8px 20px;
+}
+
+.table {
+    background-color: #fff;
+}
+
+.container {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.footer {
+    padding: 20px 0;
+    background-color: var(--npu-light-gray);
+    color: #888;
+    text-align: center;
+    flex-shrink: 0;
+    border-top: 1px solid #e8e8e8;
+}
+
+.alert {
+    border-radius: 4px;
+}
+
+/* Book details page */
+.book-details-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,.1);
+}
+
+/* Forms */
+.form-control {
+    border-radius: 4px;
+}
+
+/* Portal-specific styles */
+.portal-card {
+    text-align: center;
+    padding: 2rem 1rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.portal-card .icon {
+    font-size: 3rem;
+    color: var(--npu-blue);
+    margin-bottom: 1rem;
+}
+
+.portal-card h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.portal-card a {
+    text-decoration: none;
+    color: var(--npu-text-color);
+}
+
+.portal-card a:hover .card {
+    border-color: var(--npu-blue);
+}
+
+.jumbotron {
+    background-color: var(--npu-blue);
+    color: #fff;
+    padding: 4rem 2rem;
+    border-radius: 10px;
+}

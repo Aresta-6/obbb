@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{{ url_for('main.books') }}">Books</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ book.Title }}</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block title %}{{ book.Title }}{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="text-center mb-3">
+                    <img src="{{ book.CoverImageURL or 'https://covers.openlibrary.org/b/isbn/' ~ book.ISBN ~ '-L.jpg?default=false' }}" class="img-fluid rounded shadow-sm" alt="Cover for {{ book.Title }}"
+                         onerror="this.onerror=null;this.src='https://via.placeholder.com/300x450.png?text={{ book.Title | replace(' ', '+') }}';">
+                </div>
+            </div>
+            <div class="col-md-8">
+                <h2 class="card-title">{{ book.Title }}</h2>
+                <h5 class="card-subtitle mb-3 text-muted">{{ book.Authors }}</h5>
+                <p class="card-text">
+                    <strong>ISBN:</strong> {{ book.ISBN }}<br>
+                    <strong>Publisher:</strong> {{ book.PublisherName }}<br>
+                    <strong>Category:</strong> {{ book.CategoryName }}
+                </p>
+                <hr>
+                <p class="card-text">{{ book.Description }}</p>
+                <hr>
+                
+                {% if available_copies > 0 %}
+                    <div class="alert alert-success">There are <strong>{{ available_copies }}</strong> copies available for borrowing.</div>
+                {% else %}
+                    <div class="alert alert-warning">No copies are currently available for borrowing.</div>
+                {% endif %}
+
+                {% if 'user_id' in session %}
+                    {% if not user_has_reserved and available_copies == 0 %}
+                        <form action="{{ url_for('user.reserve_book', book_id=book.BookID) }}" method="post" class="d-inline">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <button type="submit" class="btn btn-secondary">Reserve a Copy</button>
+                        </form>
+                    {% elif user_has_reserved %}
+                        <p class="text-info">You already have a pending reservation for this book.</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-header">
+        <h3>Copies</h3>
+    </div>
+    <div class="card-body">
+        {% if copies %}
+            <ul class="list-group list-group-flush">
+            {% for copy in copies %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Copy ID:</strong> {{ copy.CopyID }} <br>
+                        <small class="text-muted">Location: {{ copy.Location }}</small>
+                    </div>
+                    <div>
+                        <span class="badge badge-pill badge-{{ 'success' if copy.Status == 'Available' else 'secondary' }} mr-3">{{ copy.Status }}</span>
+                        {% if copy.Status == 'Available' and 'user_id' in session %}
+                            <a href="{{ url_for('user.borrow', copy_id=copy.CopyID) }}" class="btn btn-primary btn-sm">Borrow</a>
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p class="card-text">There are no copies of this book in the system.</p>
+        {% endif %}
+    </div>
+</div>
+
+<a href="{{ url_for('main.books') }}" class="btn btn-outline-secondary mt-4">&larr; Back to book list</a>
+{% endblock %}

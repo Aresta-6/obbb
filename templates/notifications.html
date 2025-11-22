@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}My Notifications{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">My Notifications</h1>
+
+<div class="list-group">
+    {% if notifications %}
+        {% for notification in notifications %}
+            <div class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <p class="mb-1">{{ notification.Message }}</p>
+                    <small>{{ notification.Timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="list-group-item">
+            You have no notifications.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block breadcrumb %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+    <li class="breadcrumb-item active" aria-current="page">My Profile</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <h2 class="mb-4">My Profile</h2>
+        <div class="card">
+            <div class="card-body">
+                <form method="post">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <div class="form-group">
+                        <label for="userid">UserID</label>
+                        <input type="text" id="userid" class="form-control" value="{{ user.UserID }}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="fullname">Full Name</label>
+                        <input type="text" id="fullname" name="fullname" class="form-control" value="{{ user.FullName }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="usertype">User Type</label>
+                        <input type="text" id="usertype" class="form-control" value="{{ user.UserType }}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="regdate">Registration Date</label>
+                        <input type="text" id="regdate" class="form-control" value="{{ user.RegistrationDate.strftime('%Y-%m-%d') }}" readonly>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <h2 class="mb-4">My Borrowing History</h2>
+        <div class="card">
+            <div class="card-body">
+                {% if history %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Borrow Date</th>
+                                    <th>Return Date</th>
+                                    <th>Fine</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in history %}
+                                <tr>
+                                    <td>{{ item.Title }}</td>
+                                    <td>{{ item.BorrowDate.strftime('%Y-%m-%d') }}</td>
+                                    <td>{{ item.ReturnDate.strftime('%Y-%m-%d') if item.ReturnDate else 'Not Returned' }}</td>
+                                    <td>{{ item.Fine if item.Fine else 'N/A' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">You have no borrowing history.</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
